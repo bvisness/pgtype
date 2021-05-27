@@ -57,6 +57,10 @@ func TestTimestampNanosecondsTruncated(t *testing.T) {
 			if !(ts.Status == pgtype.Present && ts.Time.Equal(tt.expected)) {
 				t.Errorf("%d. EncodeText did not truncate nanoseconds", i)
 			}
+
+			if tt.expected.Location() != ts.Time.Location() {
+				t.Errorf("%d. DecodeText did not produce the correct location (expected %v, got %v)", i, tt.expected.Location(), ts.Time.Location())
+			}
 		}
 
 		{
@@ -73,6 +77,10 @@ func TestTimestampNanosecondsTruncated(t *testing.T) {
 
 			if !(ts.Status == pgtype.Present && ts.Time.Equal(tt.expected)) {
 				t.Errorf("%d. EncodeBinary did not truncate nanoseconds", i)
+			}
+
+			if tt.expected.Location() != ts.Time.Location() {
+				t.Errorf("%d. DecodeBinary did not produce the correct location (expected %v, got %v)", i, tt.expected.Location(), ts.Time.Location())
 			}
 		}
 	}
